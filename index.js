@@ -3,6 +3,7 @@ const app = express()
 const redis = require('redis')
 const axios = require('axios')
 const client = redis.createClient(6379)
+client.connect();
 
 const bodyParser = require('body-parser')
 
@@ -26,16 +27,30 @@ const getSomething = async (req, res) => {
         //start redis server => sudo service redis-server start
         //start port => redis-cli
         //Get redis save key value fromcli => get {username as params} 
-        await client.connect();
-        client.setEx(username, 3600, email)
+        client.setEx(username, 60, email)
         res.send(setRes(username, email))
     } catch (error) {
         console.log(error.toString());
     }
 }
 
-app.get('/:username', getSomething)
+const getCacheData = async (req, res) => {
+    try {
+        const username = req.params.username
+        const data = await client.get(username)
+        if (data === null) {
+            res.send("null")
+        } else {
+            res.send(data)
+        }
+    } catch (error) {
+        console.log(error.toString());
+    }
+}
 
-app.listen(3333, () => {
+app.get('/:username', getSomething)
+app.get('/getsome/:username', getCacheData)
+
+app.listen(3000, () => {
     console.log("3000 port running");
 })
