@@ -4,7 +4,7 @@ var cors = require("cors");
 const redis = require("redis");
 const axios = require("axios");
 const client = redis.createClient({
-  url: "rediss://red-cjff8ginip6c73c60lc0:v3iFm0A7GSIrVtCcKUPR17EHQ4GNTIEB@singapore-redis.render.com:6379",
+  url: "redis://red-cjff8ginip6c73c60lc0:6379",
 });
 client.on("error", (err) => console.log("Redis Client Error", err));
 
